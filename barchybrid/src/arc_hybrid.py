@@ -16,7 +16,7 @@ class ArcHybridLSTM:
         self.activation = self.activations[options.activation]
 
         self.oracle = options.oracle
-        self.ldims = options.lstm_dims
+        self.ldims = options.lstm_dims * 2
         self.wdims = options.wembedding_dims
         self.pdims = options.pembedding_dims
         self.rdims = options.rembedding_dims
