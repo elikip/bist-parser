@@ -67,4 +67,8 @@ This software is released under the terms of the [Apache License, Version 2.0](h
 
 For questions and usage issues, please contact elikip@gmail.com
 
+#### Credits
+
+Eliyahu Kiperwasser
+Yoav Goldberg
 
