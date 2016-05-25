@@ -69,6 +69,8 @@ def vocab(conll_path):
     return (wordsCount, {w: i for i, w in enumerate(wordsCount.keys())},  posCount.keys(), relCount.keys())
 
 def read_conll(fh, proj):
+    dropped = 0
+    read = 0
     root = ConllEntry(0, '*root*', 'ROOT-POS', 'ROOT-CPOS', 0, 'rroot')
     tokens = [root]
     for line in fh:
@@ -79,12 +81,17 @@ def read_conll(fh, proj):
                     yield tokens
                 else:
                     print 'Non-projective sentence dropped'
+                    dropped += 1
+                read += 1
             tokens = [root]
             id = 0
         else:
             tokens.append(ConllEntry(int(tok[0]), tok[1], tok[3], tok[4], int(tok[6]) if tok[6] != '_' else -1, tok[7]))
     if len(tokens) > 1:
         yield tokens
+
+    print dropped, 'dropped non-projective sentences.'
+    print read, 'sentences read.'
 
 
 def write_conll(fn, conll_gen):
