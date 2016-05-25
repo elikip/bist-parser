@@ -69,6 +69,6 @@ For questions and usage issues, please contact elikip@gmail.com
 
 #### Credits
 
-Eliyahu Kiperwasser
-Yoav Goldberg
+[Eliyahu Kiperwasser](http://elki.cc)
+[Yoav Goldberg](https://www.cs.bgu.ac.il/~yoavg/uni/)
 
