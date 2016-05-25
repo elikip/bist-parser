@@ -1,6 +1,6 @@
 from optparse import OptionParser
 from arc_hybrid import ArcHybridLSTM
-import pickle, utils, os, time
+import pickle, utils, os, time, sys
 
 if __name__ == '__main__':
     parser = OptionParser()
@@ -35,6 +35,10 @@ if __name__ == '__main__':
     print 'Using external embedding:', options.external_embedding
 
     if not options.predictFlag:
+        if not (options.rlFlag or options.rlMostFlag or options.headFlag):
+            print 'You must use either --userlmost or --userl or --usehead (you can use multiple)'
+            sys.exit()
+
         print 'Preparing vocab'
         words, w2i, pos, rels = utils.vocab(options.conll_train)
 
