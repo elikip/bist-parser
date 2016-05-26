@@ -30,6 +30,7 @@ if __name__ == '__main__':
     parser.add_option("--userlmost", action="store_true", dest="rlFlag", default=False)
     parser.add_option("--userl", action="store_true", dest="rlMostFlag", default=False)
     parser.add_option("--predict", action="store_true", dest="predictFlag", default=False)
+    parser.add_option("--cnn-mem", type="int", dest="cnn_mem", default=512)
 
     (options, args) = parser.parse_args()
     print 'Using external embedding:', options.external_embedding
