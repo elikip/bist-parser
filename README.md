@@ -6,7 +6,7 @@ The techniques behind the parser are described in the paper [Simple and Accurate
 #### Required software
 
  * Python 2.7 interpreter
- * [PyCNN library](https://github.com/clab/cnn/tree/master/pycnn)
+ * [PyCNN library](https://github.com/clab/cnn-v1/tree/master/pycnn)
 
 #### Train a parsing model
 
