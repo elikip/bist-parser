@@ -1,7 +1,7 @@
 # BIST Parsers
 ## Graph & Transition based dependency parsers using BiLSTM feature extractors.
 
-The techniques behind the parser are described in the paper [Simple and Accurate Dependency Parsing Using Bidirectional LSTM Feature Representations](https://transacl.org/ojs/index.php/tacl/article/view/885). 
+The techniques behind the parser are described in the paper [Simple and Accurate Dependency Parsing Using Bidirectional LSTM Feature Representations](https://www.transacl.org/ojs/index.php/tacl/article/viewFile/885/198). 
 
 #### Required software
 
