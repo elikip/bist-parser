@@ -45,18 +45,18 @@ Note 2: If you are using the first-order trained model we provided please do not
 
 If you make use of this software for research purposes, we'll appreciate citing the following:
 
-    @ARTICLE{2016arXiv160304351K,
-      author = {{Kiperwasser}, E. and {Goldberg}, Y.},
-      title = "{Simple and Accurate Dependency Parsing Using Bidirectional LSTM Feature Representations}",
-      journal = {ArXiv e-prints},
-      archivePrefix = "arXiv",
-      eprint = {1603.04351},
-      primaryClass = "cs.CL",
-      keywords = {Computer Science - Computation and Language},
-      year = 2016,
-      month = mar,
-      adsurl = {http://adsabs.harvard.edu/abs/2016arXiv160304351K},
-      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+    @article{DBLP:journals/tacl/KiperwasserG16,
+        author    = {Eliyahu Kiperwasser and Yoav Goldberg},
+        title     = {Simple and Accurate Dependency Parsing Using Bidirectional {LSTM}
+               Feature Representations},
+        journal   = {{TACL}},
+        volume    = {4},
+        pages     = {313--327},
+        year      = {2016},
+        url       = {https://transacl.org/ojs/index.php/tacl/article/view/885},
+        timestamp = {Tue, 09 Aug 2016 14:51:09 +0200},
+        biburl    = {http://dblp.uni-trier.de/rec/bib/journals/tacl/KiperwasserG16},
+        bibsource = {dblp computer science bibliography, http://dblp.org}
     }
 
 #### License
