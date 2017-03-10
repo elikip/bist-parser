@@ -7,7 +7,6 @@ The techniques behind the parser are described in the paper [Simple and Accurate
 
  * Python 2.7 interpreter
  * [DyNet library](https://github.com/clab/dynet/tree/master/python)
-# * [PyCNN library](https://github.com/clab/cnn-v1/tree/master/pycnn)
 
 #### Train a parsing model
 
