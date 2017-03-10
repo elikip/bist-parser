@@ -26,7 +26,8 @@ if __name__ == '__main__':
     parser.add_option("--predict", action="store_true", dest="predictFlag", default=False)
     parser.add_option("--bibi-lstm", action="store_true", dest="bibiFlag", default=False)
     parser.add_option("--disablecostaug", action="store_false", dest="costaugFlag", default=True)
-    parser.add_option("--cnn-seed", type="int", dest="seed", default=0)
+    parser.add_option("--dynet-seed", type="int", dest="seed", default=0)
+    parser.add_option("--dynet-mem", type="int", dest="mem", default=0)
 
     (options, args) = parser.parse_args()
 
@@ -39,11 +40,11 @@ if __name__ == '__main__':
         stored_opt.external_embedding = options.external_embedding
 
         print 'Initializing lstm mstparser:'
-        parser = mstlstm.MSTParserLSTM(words, pos, rels, w2i, stored_opt) 
+        parser = mstlstm.MSTParserLSTM(words, pos, rels, w2i, stored_opt)
 
         parser.Load(options.model)
         tespath = os.path.join(options.output, 'test_pred.conll')
-        
+
         ts = time.time()
         test_res = list(parser.Predict(options.conll_test))
         te = time.time()
@@ -60,7 +61,7 @@ if __name__ == '__main__':
         print 'Finished collecting vocab'
 
         print 'Initializing lstm mstparser:'
-        parser = mstlstm.MSTParserLSTM(words, pos, rels, w2i, options) 
+        parser = mstlstm.MSTParserLSTM(words, pos, rels, w2i, options)
 
         for epoch in xrange(options.epochs):
             print 'Starting epoch', epoch

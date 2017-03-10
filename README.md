@@ -6,7 +6,8 @@ The techniques behind the parser are described in the paper [Simple and Accurate
 #### Required software
 
  * Python 2.7 interpreter
- * [PyCNN library](https://github.com/clab/cnn-v1/tree/master/pycnn)
+ * [DyNet library](https://github.com/clab/dynet/tree/master/python)
+# * [PyCNN library](https://github.com/clab/cnn-v1/tree/master/pycnn)
 
 #### Train a parsing model
 
@@ -15,7 +16,7 @@ For the faster graph-based parser change directory to `bmstparser` (1200 words/s
 
 To train a parsing model with for either parsing architecture type the following at the command prompt:
 
-    python src/parser.py --cnn-seed 123456789 --outdir [results directory] --train training.conll --dev development.conll --epochs 30 --lstmdims 125 --lstmlayers 2 [--extrn extrn.vectors] --bibi-lstm
+    python src/parser.py --dynet-seed 123456789 [--dynet-mem XXXX] --outdir [results directory] --train training.conll --dev development.conll --epochs 30 --lstmdims 125 --lstmlayers 2 [--extrn extrn.vectors] --bibi-lstm
 
 We use the same external embedding used in [Transition-Based Dependency Parsing with Stack Long Short-Term Memory](http://arxiv.org/abs/1505.08075) which can be downloaded from the authors [github repository](https://github.com/clab/lstm-parser/) and [directly here](https://drive.google.com/file/d/0B8nESzOdPhLsdWF2S1Ayb1RkTXc/view?usp=sharing).
 
