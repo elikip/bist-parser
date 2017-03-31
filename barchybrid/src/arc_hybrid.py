@@ -216,12 +216,14 @@ class ArcHybridLSTM:
             for iSentence, sentence in enumerate(read_conll(conllFP, False)):
                 self.Init()
 
-                sentence = sentence[1:] + [sentence[0]]
-                self.getWordEmbeddings(sentence, False)
-                stack = ParseForest([])
-                buf = ParseForest(sentence)
+                conll_sentence = [entry for entry in sentence if isinstance(entry, utils.ConllEntry)]
 
-                for root in sentence:
+                conll_sentence = conll_sentence[1:] + [conll_sentence[0]]
+                self.getWordEmbeddings(conll_sentence, False)
+                stack = ParseForest([])
+                buf = ParseForest(conll_sentence)
+
+                for root in conll_sentence:
                     root.lstms = [root.vec for _ in xrange(self.nnvecs)]
 
                 hoffset = 1 if self.headFlag else 0
@@ -261,7 +263,7 @@ class ArcHybridLSTM:
                             parent.lstms[bestOp + hoffset] = child.vec
 
                 renew_cg()
-                yield [sentence[-1]] + sentence[:-1]
+                yield sentence
 
 
     def Train(self, conll_path):
@@ -298,12 +300,14 @@ class ArcHybridLSTM:
                     lerrors = 0
                     ltotal = 0
 
-                sentence = sentence[1:] + [sentence[0]]
-                self.getWordEmbeddings(sentence, True)
-                stack = ParseForest([])
-                buf = ParseForest(sentence)
+                conll_sentence = [entry for entry in sentence if isinstance(entry, utils.ConllEntry)]
 
-                for root in sentence:
+                conll_sentence = conll_sentence[1:] + [conll_sentence[0]]
+                self.getWordEmbeddings(conll_sentence, True)
+                stack = ParseForest([])
+                buf = ParseForest(conll_sentence)
+
+                for root in conll_sentence:
                     root.lstms = [root.vec for _ in xrange(self.nnvecs)]
 
                 hoffset = 1 if self.headFlag else 0
