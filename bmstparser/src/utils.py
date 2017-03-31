@@ -43,12 +43,12 @@ def read_conll(fh):
     root = ConllEntry(0, '*root*', '*root*', 'ROOT-POS', 'ROOT-CPOS', '_', -1, 'rroot', '_', '_')
     tokens = [root]
     for line in fh:
-        tok = line.strip().split()
-        if not tok:
+        tok = line.strip().split('\t')
+        if not tok or line.strip() == '':
             if len(tokens)>1: yield tokens
             tokens = [root]
         else:
-            if tok[0] == '#' or '-' in tok[0] or '.' in tok[0]:
+            if line[0] == '#' or '-' in tok[0] or '.' in tok[0]:
                 tokens.append(line.strip())
             else:
                 tokens.append(ConllEntry(int(tok[0]), tok[1], tok[2], tok[4], tok[3], tok[5], int(tok[6]) if tok[6] != '_' else -1, tok[7], tok[8], tok[9]))
