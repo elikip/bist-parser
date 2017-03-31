@@ -145,7 +145,7 @@ class MSTParserLSTM:
                 for entry in sentence:
                     wordvec = self.wlookup[int(self.vocab.get(entry.norm, 0))] if self.wdims > 0 else None
                     posvec = self.plookup[int(self.pos[entry.pos])] if self.pdims > 0 else None
-                    evec = self.elookup[int(self.vocab.get(entry.form, self.vocab.get(entry.norm, 0)))] if self.external_embedding is not None else None
+                    evec = self.elookup[int(self.extrnd.get(entry.form, self.extrnd.get(entry.norm, 0)))] if self.external_embedding is not None else None
                     entry.vec = concatenate(filter(None, [wordvec, posvec, evec]))
 
                     entry.lstms = [entry.vec, entry.vec]
@@ -234,7 +234,7 @@ class MSTParserLSTM:
                     evec = None
 
                     if self.external_embedding is not None:
-                        evec = self.elookup[self.vocab.get(entry.form, self.vocab.get(entry.norm, 0)) if (dropFlag or (random.random() < 0.5)) else 0]
+                        evec = self.elookup[self.extrnd.get(entry.form, self.extrnd.get(entry.norm, 0)) if (dropFlag or (random.random() < 0.5)) else 0]
                     entry.vec = concatenate(filter(None, [wordvec, posvec, evec]))
 
                     entry.lstms = [entry.vec, entry.vec]
