@@ -142,7 +142,9 @@ class MSTParserLSTM:
     def Predict(self, conll_path):
         with open(conll_path, 'r') as conllFP:
             for iSentence, sentence in enumerate(read_conll(conllFP)):
-                for entry in sentence:
+                conll_sentence = [entry for entry in sentence if isinstance(entry, utils.ConllEntry)]
+
+                for entry in conll_sentence:
                     wordvec = self.wlookup[int(self.vocab.get(entry.norm, 0))] if self.wdims > 0 else None
                     posvec = self.plookup[int(self.pos[entry.pos])] if self.pdims > 0 else None
                     evec = self.elookup[int(self.extrnd.get(entry.form, self.extrnd.get(entry.norm, 0)))] if self.external_embedding is not None else None
@@ -159,7 +161,7 @@ class MSTParserLSTM:
                     lstm_forward = self.builders[0].initial_state()
                     lstm_backward = self.builders[1].initial_state()
 
-                    for entry, rentry in zip(sentence, reversed(sentence)):
+                    for entry, rentry in zip(conll_sentence, reversed(conll_sentence)):
                         lstm_forward = lstm_forward.add_input(entry.vec)
                         lstm_backward = lstm_backward.add_input(rentry.vec)
 
@@ -167,23 +169,23 @@ class MSTParserLSTM:
                         rentry.lstms[0] = lstm_backward.output()
 
                     if self.bibiFlag:
-                        for entry in sentence:
+                        for entry in conll_sentence:
                             entry.vec = concatenate(entry.lstms)
 
                         blstm_forward = self.bbuilders[0].initial_state()
                         blstm_backward = self.bbuilders[1].initial_state()
 
-                        for entry, rentry in zip(sentence, reversed(sentence)):
+                        for entry, rentry in zip(conll_sentence, reversed(conll_sentence)):
                             blstm_forward = blstm_forward.add_input(entry.vec)
                             blstm_backward = blstm_backward.add_input(rentry.vec)
 
                             entry.lstms[1] = blstm_forward.output()
                             rentry.lstms[0] = blstm_backward.output()
 
-                scores, exprs = self.__evaluate(sentence, True)
+                scores, exprs = self.__evaluate(conll_sentence, True)
                 heads = decoder.parse_proj(scores)
 
-                for entry, head in zip(sentence, heads):
+                for entry, head in zip(conll_sentence, heads):
                     entry.pred_parent_id = head
                     entry.pred_relation = '_'
 
@@ -191,8 +193,8 @@ class MSTParserLSTM:
 
                 if self.labelsFlag:
                     for modifier, head in enumerate(heads[1:]):
-                        scores, exprs = self.__evaluateLabel(sentence, head, modifier+1)
-                        sentence[modifier+1].pred_relation = self.irels[max(enumerate(scores), key=itemgetter(1))[0]]
+                        scores, exprs = self.__evaluateLabel(conll_sentence, head, modifier+1)
+                        conll_sentence[modifier+1].pred_relation = self.irels[max(enumerate(scores), key=itemgetter(1))[0]]
 
                 renew_cg()
                 if not dump:
@@ -226,7 +228,9 @@ class MSTParserLSTM:
                     lerrors = 0
                     ltotal = 0
 
-                for entry in sentence:
+                conll_sentence = [entry for entry in sentence if isinstance(entry, utils.ConllEntry)]
+
+                for entry in conll_sentence:
                     c = float(self.wordsCount.get(entry.norm, 0))
                     dropFlag = (random.random() < (c/(0.25+c)))
                     wordvec = self.wlookup[int(self.vocab.get(entry.norm, 0)) if dropFlag else 0] if self.wdims > 0 else None
@@ -248,7 +252,7 @@ class MSTParserLSTM:
                     lstm_forward = self.builders[0].initial_state()
                     lstm_backward = self.builders[1].initial_state()
 
-                    for entry, rentry in zip(sentence, reversed(sentence)):
+                    for entry, rentry in zip(conll_sentence, reversed(conll_sentence)):
                         lstm_forward = lstm_forward.add_input(entry.vec)
                         lstm_backward = lstm_backward.add_input(rentry.vec)
 
@@ -256,27 +260,27 @@ class MSTParserLSTM:
                         rentry.lstms[0] = lstm_backward.output()
 
                     if self.bibiFlag:
-                        for entry in sentence:
+                        for entry in conll_sentence:
                             entry.vec = concatenate(entry.lstms)
 
                         blstm_forward = self.bbuilders[0].initial_state()
                         blstm_backward = self.bbuilders[1].initial_state()
 
-                        for entry, rentry in zip(sentence, reversed(sentence)):
+                        for entry, rentry in zip(conll_sentence, reversed(conll_sentence)):
                             blstm_forward = blstm_forward.add_input(entry.vec)
                             blstm_backward = blstm_backward.add_input(rentry.vec)
 
                             entry.lstms[1] = blstm_forward.output()
                             rentry.lstms[0] = blstm_backward.output()
 
-                scores, exprs = self.__evaluate(sentence, True)
-                gold = [entry.parent_id for entry in sentence]
+                scores, exprs = self.__evaluate(conll_sentence, True)
+                gold = [entry.parent_id for entry in conll_sentence]
                 heads = decoder.parse_proj(scores, gold if self.costaugFlag else None)
 
                 if self.labelsFlag:
                     for modifier, head in enumerate(gold[1:]):
-                        rscores, rexprs = self.__evaluateLabel(sentence, head, modifier+1)
-                        goldLabelInd = self.rels[sentence[modifier+1].relation]
+                        rscores, rexprs = self.__evaluateLabel(conll_sentence, head, modifier+1)
+                        goldLabelInd = self.rels[conll_sentence[modifier+1].relation]
                         wrongLabelInd = max(((l, scr) for l, scr in enumerate(rscores) if l != goldLabelInd), key=itemgetter(1))[0]
                         if rscores[goldLabelInd] < rscores[wrongLabelInd] + 1:
                             lerrs.append(rexprs[wrongLabelInd] - rexprs[goldLabelInd])
@@ -289,7 +293,7 @@ class MSTParserLSTM:
                     mloss += (e)
                     errs.extend(loss)
 
-                etotal += len(sentence)
+                etotal += len(conll_sentence)
 
                 if iSentence % 1 == 0 or len(errs) > 0 or len(lerrs) > 0:
                     eeloss = 0.0
