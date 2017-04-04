@@ -43,7 +43,8 @@ if __name__ == '__main__':
         parser = mstlstm.MSTParserLSTM(words, pos, rels, w2i, stored_opt)
 
         parser.Load(options.model)
-        tespath = os.path.join(options.output, 'test_pred.conll')
+        conllu = (os.path.splitext(options.conll_test.lower())[1] == '.conllu')
+        tespath = os.path.join(options.output, 'test_pred.conll' if not conllu else 'test_pred.conllu')
 
         ts = time.time()
         test_res = list(parser.Predict(options.conll_test))
@@ -51,7 +52,10 @@ if __name__ == '__main__':
         print 'Finished predicting test.', te-ts, 'seconds.'
         utils.write_conll(tespath, test_res)
 
-        os.system('perl src/utils/eval.pl -g ' + options.conll_test + ' -s ' + tespath  + ' > ' + tespath + '.txt')
+        if not conllu:
+            os.system('perl src/utils/eval.pl -g ' + options.conll_test + ' -s ' + tespath  + ' > ' + tespath + '.txt')
+        else:
+            os.system('python src/utils/evaluation_script/conll17_ud_eval.py -v -w src/utils/evaluation_script/weights.clas ' + options.conll_test + ' ' + tespath + ' > ' + testpath + '.txt')
     else:
         print 'Preparing vocab'
         words, w2i, pos, rels = utils.vocab(options.conll_train)
@@ -66,8 +70,13 @@ if __name__ == '__main__':
         for epoch in xrange(options.epochs):
             print 'Starting epoch', epoch
             parser.Train(options.conll_train)
-            devpath = os.path.join(options.output, 'dev_epoch_' + str(epoch+1) + '.conll')
+            conllu = (os.path.splitext(options.conll_dev.lower())[1] == '.conllu')
+            devpath = os.path.join(options.output, 'dev_epoch_' + str(epoch+1) + ('.conll' if not conllu else '.conllu'))
             utils.write_conll(devpath, parser.Predict(options.conll_dev))
             parser.Save(os.path.join(options.output, os.path.basename(options.model) + str(epoch+1)))
-            os.system('perl src/utils/eval.pl -g ' + options.conll_dev  + ' -s ' + devpath  + ' > ' + devpath + '.txt')
+
+            if not conllu:
+                os.system('perl src/utils/eval.pl -g ' + options.conll_dev  + ' -s ' + devpath  + ' > ' + devpath + '.txt')
+            else:
+                os.system('python src/utils/evaluation_script/conll17_ud_eval.py -v -w src/utils/evaluation_script/weights.clas ' + options.conll_dev + ' ' + devpath + ' > ' + devpath + '.txt')
 
