@@ -121,6 +121,11 @@ class ArcHybridLSTM:
 
         scrs, uscrs = routput.value(), output.value()
 
+        #transition conditions
+        left_arc_conditions = len(stack) > 0 and len(buf) > 0
+        right_arc_conditions = len(stack) > 1 and stack.roots[-1].id != 0
+        shift_conditions = len(buf) >0 and buf.roots[0].id != 0
+
         uscrs0 = uscrs[0]
         uscrs1 = uscrs[1]
         uscrs2 = uscrs[2]
@@ -128,17 +133,17 @@ class ArcHybridLSTM:
             output0 = output[0]
             output1 = output[1]
             output2 = output[2]
-            ret = [ [ (rel, 0, scrs[1 + j * 2] + uscrs1, routput[1 + j * 2 ] + output1) for j, rel in enumerate(self.irels) ] if len(stack) > 0 and len(buf) > 0 else [],
-                    [ (rel, 1, scrs[2 + j * 2] + uscrs2, routput[2 + j * 2 ] + output2) for j, rel in enumerate(self.irels) ] if len(stack) > 1 else [],
-                    [ (None, 2, scrs[0] + uscrs0, routput[0] + output0) ] if len(buf) > 0 else [] ]
+            ret = [ [ (rel, 0, scrs[1 + j * 2] + uscrs1, routput[1 + j * 2 ] + output1) for j, rel in enumerate(self.irels) ] if left_arc_conditions else [],
+                    [ (rel, 1, scrs[2 + j * 2] + uscrs2, routput[2 + j * 2 ] + output2) for j, rel in enumerate(self.irels) ] if right_arc_conditions else [],
+                    [ (None, 2, scrs[0] + uscrs0, routput[0] + output0) ] if shift_conditions else [] ]
         else:
             s1,r1 = max(zip(scrs[1::2],self.irels))
             s2,r2 = max(zip(scrs[2::2],self.irels))
             s1 += uscrs1
             s2 += uscrs2
-            ret = [ [ (r1, 0, s1) ] if len(stack) > 0 and len(buf) > 0 else [],
-                    [ (r2, 1, s2) ] if len(stack) > 1 else [],
-                    [ (None, 2, scrs[0] + uscrs0) ] if len(buf) > 0 else [] ]
+            ret = [ [ (r1, 0, s1) ] if left_arc_conditions else [],
+                    [ (r2, 1, s2) ] if right_arc_conditions else [],
+                    [ (None, 2, scrs[0] + uscrs0) ] if shift_conditions else [] ]
         return ret
         #return [ [ (rel, 0, scrs[1 + j * 2 + 0] + uscrs[1], routput[1 + j * 2 + 0] + output[1]) for j, rel in enumerate(self.irels) ] if len(stack) > 0 and len(buf) > 0 else [],
         #         [ (rel, 1, scrs[1 + j * 2 + 1] + uscrs[2], routput[1 + j * 2 + 1] + output[2]) for j, rel in enumerate(self.irels) ] if len(stack) > 1 else [],
@@ -228,7 +233,7 @@ class ArcHybridLSTM:
 
                 hoffset = 1 if self.headFlag else 0
 
-                while len(buf) > 0 or len(stack) > 1 :
+                while not (len(buf) == 1 and len(stack) == 0):
                     scores = self.__evaluate(stack, buf, False)
                     best = max(chain(*scores), key = itemgetter(2) )
 
@@ -312,7 +317,7 @@ class ArcHybridLSTM:
 
                 hoffset = 1 if self.headFlag else 0
 
-                while len(buf) > 0 or len(stack) > 1 :
+                while not (len(buf) == 1 and len(stack) == 0):
                     scores = self.__evaluate(stack, buf, True)
                     scores.append([(None, 3, ninf ,None)])
 
