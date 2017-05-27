@@ -58,6 +58,12 @@ If you make use of this software for research purposes, we'll appreciate citing 
         biburl    = {http://dblp.uni-trier.de/rec/bib/journals/tacl/KiperwasserG16},
         bibsource = {dblp computer science bibliography, http://dblp.org}
     }
+    
+#### Forks
+
+[BIST-PyTorch](https://github.com/wddabc/bist-parser): A PyTorch implementation of the BIST Parsers (for graph based parser only). 
+
+[BIST-COVINGTON](https://github.com/aghie/LyS-FASTPARSE): A neural implementation of the Covington's algorithm for non-projective dependency parsing. It extends the original BIST transition-based a greedy parser by including a dynamic oracle for non-projective parsing to mitigate error propagation.
 
 #### License
 
