@@ -65,6 +65,8 @@ If you make use of this software for research purposes, we'll appreciate citing 
 
 [BIST-COVINGTON](https://github.com/aghie/LyS-FASTPARSE): A neural implementation of the Covington's algorithm for non-projective dependency parsing. It extends the original BIST transition-based a greedy parser by including a dynamic oracle for non-projective parsing to mitigate error propagation.
 
+[Uppsala Parser](https://github.com/UppsalaNLP/uuparser):  A transition-based parser for Universal Dependencies with BiLSTM word and character representations. 
+
 #### License
 
 This software is released under the terms of the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
